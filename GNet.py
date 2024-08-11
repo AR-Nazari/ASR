@@ -3,6 +3,7 @@ import torch.nn as nn
 from enum import Enum
 import opensmile
 import joblib
+import numpy as np
 
 #---------------------------------------------------------------------#
 class GNet_MLP(nn.Module):
@@ -83,9 +84,15 @@ class WaveFormProcess():
     
     def split_audio(self, long_wave, chunk_len = 5):
         chunk_len_s = chunk_len * self.sr
-        chunks = []
-        for i in range(0, len(long_wave), chunk_len_s):
-            chunk = long_wave[i:i + chunk_len_s]
-            chunks.append(chunk)
-        return chunks
+        if len(long_wave)<=chunk_len_s: 
+            return long_wave.reshape((1,len(long_wave)))
+        else:
+            chunks = []
+            for i in range(0, len(long_wave), chunk_len_s):
+                chunk = long_wave[i:i + chunk_len_s]
+                chunks.append(chunk)
+            if len(chunks[-1]<chunk_len_s):
+                padding = np.zeros(chunk_len_s - len(chunks[-1]))
+                chunks[-1] = np.concatenate((chunks[-1], padding))
+            return np.array(chunks)
 #-----------------------------------------------------------------------------------------#
