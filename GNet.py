@@ -75,9 +75,9 @@ class WaveFormProcess():
         self.smile = opensmile.Smile(feature_set=opensmile.FeatureSet.emobase,
                                      feature_level=opensmile.FeatureLevel.Functionals,
                                      sampling_rate=self.sr)
-        self.scaler.transform = joblib.load('minmax_scaler.pkl')
+        self.scaler = joblib.load('minmax_scaler.pkl')
         
     def feature(self, waveform):
         features = self.smile(waveform, self.sr).reshape([len(self.smile.feature_names),])
-        return self.scaler(features)
+        return self.scaler.transform(features)
 #-----------------------------------------------------------------------------------------#
