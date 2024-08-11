@@ -1,6 +1,8 @@
 import torch 
 import torch.nn as nn
 from enum import Enum
+import opensmile
+import joblib
 
 #---------------------------------------------------------------------#
 class GNet_MLP(nn.Module):
@@ -32,16 +34,17 @@ class GNet_MLP(nn.Module):
         return x
 #---------------------------------------------------------------------#
 
-#---------------------------------------------------------------------#
+
+#---------------------------#
 class ModelType(Enum):
     last_epoch = 'last net'
     best_epoch = 'best net'
     base = 'base'
     user = 'user'
-#---------------------------------------------------------------------#
+#---------------------------#
 
 
-#---------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
 class ModelLoader():
 
     def __init__(self, model_type: ModelType = ModelType.base, model_path: str = None):
@@ -61,4 +64,20 @@ class ModelLoader():
     def generate(self, x):
         self.model.eval()
         with torch.no_grad(): return self.model(x)
-#---------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+
+
+#-----------------------------------------------------------------------------------------#
+class WaveFormProcess():
+
+    def __init__(self, sr = 16000):
+        self.sr = sr
+        self.smile = opensmile(feature_set=opensmile.FeatureSet.emobase,
+                               feature_level=opensmile.FeatureLevel.Functionals,
+                               sampling_rate=self.sr)
+        self.scaler = joblib.load('minmax_scaler.pkl')
+        
+    def feature(self, waveform):
+        features = self.smile(waveform, self.sr).reshape([len(self.smile.feature_names),])
+        return self.scaler(features)
+#-----------------------------------------------------------------------------------------#
