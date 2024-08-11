@@ -79,5 +79,13 @@ class WaveFormProcess():
         
     def feature(self, waveform):
         features = self.smile(waveform, self.sr).reshape([len(self.smile.feature_names),])
-        return self.scaler.transform(features)
+        return self.scaler.transform(features.reshape(1, len(features)))
+    
+    def split_audio(self, long_wave, chunk_len = 5):
+        chunk_len_s = chunk_len * self.sr
+        chunks = []
+        for i in range(0, len(long_wave), chunk_len_s):
+            chunk = long_wave[i:i + chunk_len_s]
+            chunks.append(chunk)
+        return chunks
 #-----------------------------------------------------------------------------------------#
