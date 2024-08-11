@@ -61,3 +61,4 @@ class ModelLoader():
     def generate(self, x):
         self.model.eval()
         with torch.no_grad(): return self.model(x)
+#---------------------------------------------------------------------#
