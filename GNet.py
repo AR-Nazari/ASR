@@ -52,14 +52,14 @@ class ModelLoader():
         if model_type == ModelType.last_epoch: self.load_model('last_epoch_net.pth')
         elif model_type == ModelType.best_epoch : self.load_model('best_net.pth')
         elif model_type == ModelType.user : self.load_model(model_path)
-        else: print("Using the base network with no pretrained weights.")
+        else: print("Using the base network with no pretrained weights")
 
     def load_model(self, path):
         try:
             self.model.load_state_dict(torch.load(path))
             print(f"Loaded model weights from {path}.")
         except FileNotFoundError:
-            print(f"Model file {path} not found. Using base network.")
+            print(f"Model file {path} not found \nUsing base network")
 
     def generate(self, x):
         self.model.eval()
@@ -75,7 +75,7 @@ class WaveFormProcess():
         self.smile = opensmile.Smile(feature_set=opensmile.FeatureSet.emobase,
                                      feature_level=opensmile.FeatureLevel.Functionals,
                                      sampling_rate=self.sr)
-        self.scaler = joblib.load('minmax_scaler.pkl')
+        self.scaler.transform = joblib.load('minmax_scaler.pkl')
         
     def feature(self, waveform):
         features = self.smile(waveform, self.sr).reshape([len(self.smile.feature_names),])
