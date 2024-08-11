@@ -1,7 +1,8 @@
 import torch 
 import torch.nn as nn
+from enum import Enum
 
-
+#---------------------------------------------------------------------#
 class GNet_MLP(nn.Module):
 
     def __init__(self):
@@ -29,3 +30,11 @@ class GNet_MLP(nn.Module):
         x = self.fc6(x)
         x = self.softmax(x)
         return x
+#---------------------------------------------------------------------#
+
+#---------------------------------------------------------------------#
+class ModelType(Enum):
+    last_epoch = 'last net'
+    best_epoch = 'best net'
+    base = 'base'
+#---------------------------------------------------------------------#
