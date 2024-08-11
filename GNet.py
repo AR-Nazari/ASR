@@ -72,9 +72,9 @@ class WaveFormProcess():
 
     def __init__(self, sr = 16000):
         self.sr = sr
-        self.smile = opensmile(feature_set=opensmile.FeatureSet.emobase,
-                               feature_level=opensmile.FeatureLevel.Functionals,
-                               sampling_rate=self.sr)
+        self.smile = opensmile.Smile(feature_set=opensmile.FeatureSet.emobase,
+                                     feature_level=opensmile.FeatureLevel.Functionals,
+                                     sampling_rate=self.sr)
         self.scaler = joblib.load('minmax_scaler.pkl')
         
     def feature(self, waveform):
