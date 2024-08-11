@@ -78,10 +78,16 @@ class WaveFormProcess():
                                      sampling_rate=self.sr)
         self.scaler = joblib.load('minmax_scaler.pkl')
         
-    def feature(self, waveform):
-        features = self.smile(waveform, self.sr).reshape([len(self.smile.feature_names),])
-        return self.scaler.transform(features.reshape(1, len(features)))
-    
+    def feature(self, waveforms):
+        if len(waveforms) == 1: 
+            feature = self.smile(wave[0], self.sr).reshape([len(self.smile.feature_names),])
+            return self.scaler.transform(feature.reshape(1, len(feature)))
+        else:
+            features = [None] * len(waveforms)
+            for i, wave in enumerate(waveforms):
+                features[i] = self.smile(wave, self.sr).reshape([len(self.smile.feature_names),])            
+            return self.scaler.transform(np.array(features))
+        
     def split_audio(self, long_wave, chunk_len = 5):
         chunk_len_s = chunk_len * self.sr
         if len(long_wave)<=chunk_len_s: 
@@ -95,4 +101,9 @@ class WaveFormProcess():
                 padding = np.zeros(chunk_len_s - len(chunks[-1]))
                 chunks[-1] = np.concatenate((chunks[-1], padding))
             return np.array(chunks)
+        
+    def pipe(self, long_wave):
+        chunks = self.split_audio(long_wave)
+        features = self.feature(chunks)
+        return torch.tensor(features)
 #-----------------------------------------------------------------------------------------#
