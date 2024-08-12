@@ -32,6 +32,17 @@ def load_audio(file_path, sr=16000):
 
 
 def pipe(file_path, separator_output_directory):
+    """
+    Processes an audio file by separating it into different sources, 
+    loading the separated vocal track, and splitting it into chunks based on silence.
+
+    Args:
+        file_path (str): The path to the input audio file that needs to be processed.
+        separator_output_directory (str): The directory where the separated audio files will be saved.
+
+    Returns:
+        list: A list of AudioSegment objects, each representing a chunk of audio split by silence.
+    """
     separate_audio(file_path, separator_output_directory)
     new_path = ''.join(file_path.split('.')[:-1]+['/vocals.wav'])
     audio = load_audio(new_path)

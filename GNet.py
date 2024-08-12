@@ -84,7 +84,7 @@ class ModelLoader():
     def load_model(self, path):
         try:
             self.model.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
-            print(f"Loaded model weights from {path}.")
+            print(f"Loaded model weights from {path}")
         except FileNotFoundError:
             print(f"Model file {path} not found \nUsing base network")
 
