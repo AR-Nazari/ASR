@@ -37,4 +37,3 @@ def pipe(file_path, separator_output_directory):
     audio = load_audio(new_path)
     chunks = split_on_silence(audio, silence_thresh=audio.dBFS-10, min_silence_len=1000)
     return chunks
-
