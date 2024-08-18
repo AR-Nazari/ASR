@@ -14,7 +14,7 @@ ASR_Whisper = AutoModelForSpeechSeq2Seq.from_pretrained(pretrained_model_name_or
 GNet_Processor = GNet.WaveFormProcess()
 Whisper_Processor = AutoProcessor.from_pretrained("openai/whisper-large-v3")
 
-
+#--------------------------------------------------------------------------------------------------------------#
 def Load_n_process_audio(file_path, separator_output_directory):
     """
     Load and process audio from the given file path.
@@ -29,7 +29,10 @@ def Load_n_process_audio(file_path, separator_output_directory):
     Audio_chunks = MyAudio.pipe(file_path, separator_output_directory)
     Waveforms = [np.array(chunk.normalize().set_channels(1).get_array_of_samples()) for chunk in Audio_chunks]
     return Waveforms
+#--------------------------------------------------------------------------------------------------------------#
 
+
+#------------------------------------------------------------------------------------------------------------------------------#
 def predict(waveforms, language='persian', task='transcribe', sr=16000):
     """
     Predict transcriptions and gender classification for the given waveforms.
@@ -63,7 +66,10 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
         results.append((Transcription[0], Gender))
     
     return results
+#------------------------------------------------------------------------------------------------------------------------------#
 
+
+#--------------------------------------------------------------------------------------------------------------------#
 def pipeline(file_path, separator_output_directory, whisper_language='persian', whisper_task='transcribe', sr=16000):
     """
     Main processing pipeline to handle audio input and generate transcriptions with gender classification.
@@ -90,3 +96,4 @@ def pipeline(file_path, separator_output_directory, whisper_language='persian', 
         Results[i][0] = MyText.text_pipe(result[0])
     
     return Results
+#--------------------------------------------------------------------------------------------------------------------#
