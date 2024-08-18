@@ -40,3 +40,8 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
         results.append((Transcription[0], Gender))
     
     return results
+
+def pipeline(file_path, separator_output_directory, whisper_language='persian', whisper_task='transcribe', sr=16000):
+    Waveforms = Load_n_process_audio(file_path, separator_output_directory)
+    Results = predict(Waveforms)
+    return Results
