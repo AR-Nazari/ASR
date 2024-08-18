@@ -1,6 +1,7 @@
 import numpy as np
 import GNet
 import MyAudio
+import MyText
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
 
 
@@ -42,6 +43,15 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
     return results
 
 def pipeline(file_path, separator_output_directory, whisper_language='persian', whisper_task='transcribe', sr=16000):
+    
+    # get waveforms from audio files
     Waveforms = Load_n_process_audio(file_path, separator_output_directory)
+
+    # generate transcriptions with gender of the speaker
     Results = predict(Waveforms)
+
+    # correct spell errors and normalize text
+    for i, result in enumerate(Results):
+        Results[i][0] = MyText.text_pipe(result[0])
+    
     return Results
