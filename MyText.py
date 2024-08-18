@@ -9,7 +9,18 @@ normalizer = hazm.Normalizer()
 punc = string.punctuation + '،' + '؛'
 
 def text_pipe(input_sentence):
+    """
+    A function to preprocess Persian text by removing punctuation,
+    ignoring and protecting numbers, correcting spelling mistakes,
+    and normalizing the text.
 
+    Args:
+        input_sentence (str): The input sentence in Persian.
+
+    Returns:
+        str: The processed and normalized sentence.
+    """
+    
     # remove punctuation
     text = ''.join([char for char in input_sentence if char not in punc])
 

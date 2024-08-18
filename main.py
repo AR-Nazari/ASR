@@ -16,11 +16,33 @@ Whisper_Processor = AutoProcessor.from_pretrained("openai/whisper-large-v3")
 
 
 def Load_n_process_audio(file_path, separator_output_directory):
+    """
+    Load and process audio from the given file path.
+
+    Args:
+        file_path (str): The path to the audio file to be processed.
+        separator_output_directory (str): Directory to save separated audio chunks.
+
+    Returns:
+        list: A list of processed audio waveforms.
+    """
     Audio_chunks = MyAudio.pipe(file_path, separator_output_directory)
     Waveforms = [np.array(chunk.normalize().set_channels(1).get_array_of_samples()) for chunk in Audio_chunks]
     return Waveforms
 
 def predict(waveforms, language='persian', task='transcribe', sr=16000):
+    """
+    Predict transcriptions and gender classification for the given waveforms.
+
+    Args:
+        waveforms (list): List of audio waveforms.
+        language (str): The language of the audio (default: 'persian').
+        task (str): The task for Whisper model (default: 'transcribe').
+        sr (int): Sampling rate for audio (default: 16000).
+
+    Returns:
+        list: A list of tuples containing transcriptions and gender classifications.
+    """
 
     forced_decoder_ids = Whisper_Processor.get_decoder_prompt_ids(language=language, task=task)
     
@@ -43,12 +65,25 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
     return results
 
 def pipeline(file_path, separator_output_directory, whisper_language='persian', whisper_task='transcribe', sr=16000):
-    
+    """
+    Main processing pipeline to handle audio input and generate transcriptions with gender classification.
+
+    Args:
+        file_path (str): The path to the audio file to be processed.
+        separator_output_directory (str): Directory to save separated audio chunks.
+        whisper_language (str): The language for Whisper model (default: 'persian').
+        whisper_task (str): The task for Whisper model (default: 'transcribe').
+        sr (int): Sampling rate for audio (default: 16000).
+
+    Returns:
+        list: A list of tuples containing processed transcriptions and gender classifications.
+    """
+
     # get waveforms from audio files
     Waveforms = Load_n_process_audio(file_path, separator_output_directory)
 
     # generate transcriptions with gender of the speaker
-    Results = predict(Waveforms)
+    Results = predict(Waveforms, language=whisper_language, task=whisper_task, sr=16000)
 
     # correct spell errors and normalize text
     for i, result in enumerate(Results):
