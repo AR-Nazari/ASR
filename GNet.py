@@ -83,7 +83,7 @@ class ModelLoader():
 
     def load_model(self, path):
         try:
-            self.model.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+            self.model.load_state_dict(torch.load(path, map_location=torch.device('cpu'), weights_only=True))
             print(f"Loaded model weights from {path}")
         except FileNotFoundError:
             print(f"Model file {path} not found \nUsing base network")
@@ -129,7 +129,7 @@ class WaveFormProcess():
         
     def feature(self, waveforms):
         if len(waveforms) == 1: 
-            feature = self.smile(wave[0], self.sr).reshape([len(self.smile.feature_names),])
+            feature = self.smile(waveforms[0], self.sr).reshape([len(self.smile.feature_names),])
             return self.scaler.transform(feature.reshape(1, len(feature)))
         else:
             features = [None] * len(waveforms)
