@@ -63,7 +63,7 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
         Gender_Probabilities = (sum(GNet_Output.argmax(-1))/len(GNet_Output)).item()
         Gender = 'male speaker' if 1>=Gender_Probabilities>=0.6 else ('female speaker' if 0<=Gender_Probabilities<=0.4 else 'U')
 
-        results.append((Transcription[0], Gender))
+        results.append([Transcription[0], Gender])
     
     return results
 #------------------------------------------------------------------------------------------------------------------------------#
