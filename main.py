@@ -6,8 +6,6 @@ import MyText
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
 
 default_device = 'cuda' if torch.cuda.is_available() else 'cpu'
-if torch.cuda.is_available(): print(torch.cuda.get_device_name())
-else: print('cpu')
 print(f'Selected device for calculations is {torch.cuda.get_device_name()}') if torch.cuda.is_available() else print(f'Selected device for calculations is cpu')
 
 # Load Models
