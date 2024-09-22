@@ -44,7 +44,7 @@ def pipe(file_path, separator_output_directory):
         list: A list of AudioSegment objects, each representing a chunk of audio split by silence.
     """
     separate_audio(file_path, separator_output_directory)
-    new_path = './'+''.join(file_path.split('.')[:-1]+['/vocals.wav'])
+    new_path = './'+''.join(file_path.split('.')[:-1]+['/vocals.wav']) 
     audio = load_audio(new_path)
     chunks = split_on_silence(audio, silence_thresh=audio.dBFS-10, min_silence_len=1000)
     return chunks
