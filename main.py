@@ -1,13 +1,18 @@
+import torch
 import numpy as np
 import GNet
 import MyAudio
 import MyText
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
 
+default_device = 'cuda' if torch.cuda.is_available() else 'cpu'
+if torch.cuda.is_available(): print(torch.cuda.get_device_name())
+else: print('cpu')
+print(f'Selected device for calculations is {torch.cuda.get_device_name()}') if torch.cuda.is_available() else print(f'Selected device for calculations is cpu')
 
 # Load Models
-Gender_Classification_MLP = GNet.ModelLoader(GNet.ModelType.best_epoch)
-ASR_Whisper = AutoModelForSpeechSeq2Seq.from_pretrained(pretrained_model_name_or_path="openai/whisper-large-v3")
+Gender_Classification_MLP = GNet.ModelLoader(GNet.ModelType.best_epoch, device=default_device)
+ASR_Whisper = AutoModelForSpeechSeq2Seq.from_pretrained(pretrained_model_name_or_path="openai/whisper-large-v3").to(default_device)
 
 
 # Load Processors
@@ -55,6 +60,7 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000):
         GNet_Input = GNet_Processor.pipe(wave)
         Whisper_Input = wave/max(wave) # for normalization
         Whisper_Input_Features = Whisper_Processor(Whisper_Input, sampling_rate=sr, return_tensors="pt").input_features
+        Whisper_Input_Features = Whisper_Input_Features.to(default_device)
 
         Whisper_Predicted_ids = ASR_Whisper.generate(Whisper_Input_Features, forced_decoder_ids=forced_decoder_ids)
         Transcription = Whisper_Processor.batch_decode(Whisper_Predicted_ids, skip_special_tokens=True)

@@ -60,9 +60,11 @@ class ModelLoader():
                 - ModelType.best_epoch: Load the model with the best validation loss during training.
                 - ModelType.user: Load a model from a user-specified path.
         model_path (str, optional): The file path to the model file. Required if model_type is ModelType.user.
+        device (str, optional): Specifies the device for model computation (e.g., 'cuda' or 'cpu'). Default is 'cpu'.
 
     Attributes:
         model (GNet_MLP): The neural network model instance.
+        device (str): The device on which to run the model (e.g., 'cuda' or 'cpu').
 
     Methods:
         load_model(path):
@@ -74,8 +76,9 @@ class ModelLoader():
             to evaluation mode and disables gradient computation for inference.
     """
 
-    def __init__(self, model_type: ModelType = ModelType.base, model_path: str = None):
-        self.model = GNet_MLP()
+    def __init__(self, model_type: ModelType = ModelType.base, model_path: str = None, device='cpu'):
+        self.device = device
+        self.model = GNet_MLP().to(self.device)
         if model_type == ModelType.last_epoch: self.load_model('last_epoch_net.pth')
         elif model_type == ModelType.best_epoch : self.load_model('best_net.pth')
         elif model_type == ModelType.user : self.load_model(model_path)
@@ -83,13 +86,15 @@ class ModelLoader():
 
     def load_model(self, path):
         try:
-            self.model.load_state_dict(torch.load(path, map_location=torch.device('cpu'), weights_only=True))
+            self.model.load_state_dict(torch.load(path, map_location=torch.device(self.device), weights_only=True))
             print(f"Loaded model weights from {path}")
+            print(f'Model loaded on {self.device}')
         except FileNotFoundError:
             print(f"Model file {path} not found \nUsing base network")
 
     def generate(self, x):
         self.model.eval()
+        x = x.to(self.device)
         with torch.no_grad(): return self.model(x)
 #-------------------------------------------------------------------------------------------------------------#
 
