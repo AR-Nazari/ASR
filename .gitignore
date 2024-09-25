@@ -4,3 +4,5 @@ __pycache__
 .venv/
 TestAudio/
 pretrained_models/
+.idea
+*.docx
