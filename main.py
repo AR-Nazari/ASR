@@ -36,18 +36,35 @@ def select_device():
 
 
 #--------------------------------------------------------------------------------------------------------------#
-def Load_n_process_audio(file_path, separator_output_directory):
+# def Load_n_process_audio(file_path, separator_output_directory):
+#     """
+#     Load and process audio from the given file path.
+
+#     Args:
+#         file_path (str): The path to the audio file to be processed.
+#         separator_output_directory (str): Directory to save separated audio chunks.
+
+#     Returns:
+#         list: A list of processed audio waveforms.
+#     """
+#     Audio_chunks = MyAudio.pipe(file_path, separator_output_directory)
+#     Waveforms = [np.array(chunk.normalize().set_channels(1).get_array_of_samples()) for chunk in Audio_chunks]
+#     return Waveforms
+#--------------------------------------------------------------------------------------------------------------#
+
+
+#--------------------------------------------------------------------------------------------------------------#
+def load_n_process_audio(file_path):
     """
-    Load and process audio from the given file path.
+    Load and process audio from the given file path without the background separation.
 
     Args:
-        file_path (str): The path to the audio file to be processed.
-        separator_output_directory (str): Directory to save separated audio chunks.
+        file_path (str): The path to the input audio file that needs to be processed.
 
     Returns:
-        list: A list of processed audio waveforms.
+        list: A list of NumPy arrays, where each array represents the waveform data for a chunk of audio.
     """
-    Audio_chunks = MyAudio.pipe(file_path, separator_output_directory)
+    Audio_chunks = MyAudio.load_n_split(file_path)
     Waveforms = [np.array(chunk.normalize().set_channels(1).get_array_of_samples()) for chunk in Audio_chunks]
     return Waveforms
 #--------------------------------------------------------------------------------------------------------------#
@@ -92,26 +109,31 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000, float_ty
 
 
 #--------------------------------------------------------------------------------------------------------------------#
-def pipeline(file_path, separator_output_directory, whisper_language='persian', whisper_task='transcribe', sr=16000, float_type=torch.float32):
+def pipeline(file_path, 
+             whisper_language='persian', 
+             whisper_task='transcribe', 
+             sr=16000, 
+             float_type=torch.float32):
     """
     Main processing pipeline to handle audio input and generate transcriptions with gender classification.
 
     Args:
         file_path (str): The path to the audio file to be processed.
-        separator_output_directory (str): Directory to save separated audio chunks.
         whisper_language (str): The language for Whisper model (default: 'persian').
         whisper_task (str): The task for Whisper model (default: 'transcribe').
         sr (int): Sampling rate for audio (default: 16000).
+        float_type (torch.dtype): The data type for Torch tensors (default: torch.float32).
 
     Returns:
         list: A list of tuples containing processed transcriptions and gender classifications.
     """
 
     # get waveforms from audio files
-    Waveforms = Load_n_process_audio(file_path, separator_output_directory)
+    Waveforms = load_n_process_audio(file_path)
+
 
     # generate transcriptions with gender of the speaker
-    Results = predict(Waveforms, language=whisper_language, task=whisper_task, sr=16000, float_type=float_type)
+    Results = predict(Waveforms, language=whisper_language, task=whisper_task, sr=sr, float_type=float_type)
 
     # correct spell errors and normalize text
     for i, result in enumerate(Results):
@@ -176,7 +198,7 @@ if __name__ == "__main__":
             shutil.copyfileobj(file.file, buffer)
 
         # Use the pipeline to process the saved audio file
-        results = pipeline(saved_file_path, AUDIO_UPLOAD_DIRECTORY, float_type=torch.float16)
+        results = pipeline(saved_file_path, float_type=torch.float16)
 
         # Format the response (transcriptions and gender classifications)
         response = [{"transcription": item[0], "gender": item[1]} for item in results]
@@ -184,4 +206,4 @@ if __name__ == "__main__":
         return {"results": response}
     
 
-    uvicorn.run(app, host="127.0.0.1", port=8000, timeout_keep_alive=900, workers=4)
+    uvicorn.run(app, host="127.0.0.1", port=8000, timeout_keep_alive=1200)
