@@ -1,11 +1,11 @@
 import string
 import re
-import hazm
+# import hazm
 from parsivar import SpellCheck
 
 
 spell_checker = SpellCheck()
-normalizer = hazm.Normalizer()
+# normalizer = hazm.Normalizer()
 punc = string.punctuation + '،' + '؛'
 
 def text_pipe(input_sentence):
@@ -34,6 +34,6 @@ def text_pipe(input_sentence):
         text = text.replace(placeholder, number)
 
     # normalize
-    text = normalizer.normalize(text)
+    # text = normalizer.normalize(text)
     
     return text

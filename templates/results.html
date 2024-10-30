@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Results</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Container for scrollable content -->
+    <div class="scroll-container">
+        <!-- Home Button at the top -->
+        <div class="top-nav">
+            <button onclick="window.location.href='/'">Home</button>
+        </div>
+        
+        <!-- Main content area -->
+        <div class="container-box">
+            <h2>Processing Results</h2>
+            
+            {% for result in results %}
+            <div class="result-box">
+                <p><strong>Transcription:</strong> {{ result[0] }}</p>
+                <p><strong>Gender:</strong> {{ result[1] }}</p>
+            </div>
+            {% endfor %}
+            
+            <div class="button-container">
+                <button onclick="window.location.href='/'">Go to Home</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

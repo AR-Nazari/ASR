@@ -73,7 +73,7 @@ class ModelLoader():
         
         generate(x):
             Generates predictions using the loaded model. This method sets the model 
-            to evaluation mode and disables gradient computation for inference.
+    auth_user        to evaluation mode and disables gradient computation for inference.
     """
 
     def __init__(self, model_type: ModelType = ModelType.base, model_path: str = None, device='cpu'):

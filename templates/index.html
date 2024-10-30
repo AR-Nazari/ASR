@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR Model API Home</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container-box">
+        <!-- Home Button -->
+        <div class="top-nav">
+            <button onclick="window.location.href='/'">Home</button>
+        </div>
+
+        <h2>Welcome to the ASR API</h2>
+        <p>Choose an option below:</p>
+
+        <div class="buttons-box">
+            <button onclick="window.location.href='/docs'">Go to API Documentation</button>
+        </div>
+
+        <h3>Upload and Process Audio</h3>
+        <form action="/upload_audio/" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="audio/*" required>
+            <button type="submit">Process Audio</button>
+        </form>
+    </div>
+</body>
+</html>

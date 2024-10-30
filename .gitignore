@@ -6,3 +6,6 @@ TestAudio/
 pretrained_models/
 .idea
 *.docx
+*.ogg
+*.m4a
+*.wav
