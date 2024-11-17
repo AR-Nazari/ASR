@@ -1,0 +1,54 @@
+# Ignore the virtual environment
+.venv/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore system files and directories
+.DS_Store
+Thumbs.db
+
+# Ignore unnecessary log files
+*.log
+
+# Ignore directories that store sensitive or temporary data
+node_modules/
+tmp/
+build/
+dist/
+*.tgz
+
+# Ignore Jupyter notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
+# Ignore .git directory and git-related files
+.git/
+.gitignore# Add any other temporary files specific to your project
+*.bak
+*.swp
+
+# Ignore any other temporary or editor-specific files
+.vscode/
+.idea/
+TestAudio/
+
+# Exclude Dockerfile itself (if you don't want it in the image)
+.dockerignore
+Dockerfile
+
+# Ignore all audio files (if they're not necessary in the Docker image)
+*.mp3
+*.mp4
+*.ogg
+*.m4a
+*.wav
+
+# Add any other temporary files specific to your project
+*.bak
+*.swp
+
+# Ignore notebook
+Test.ipynb

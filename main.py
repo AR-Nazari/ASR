@@ -3,7 +3,7 @@ import numpy as np
 import GNet
 import MyAudio
 import traditional_g as tg
-import MyText
+# import MyText
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.responses import HTMLResponse
@@ -96,14 +96,12 @@ def predict(waveforms, language='persian', task='transcribe', sr=16000, float_ty
         GNet_Input =- tg.split_audio((wave/max(wave)).astype(np.float32))
         # GNet_Input = GNet_Processor.pipe(wave)
         Whisper_Input = wave/max(wave) # for normalization
-        Whisper_Inputs = Whisper_Processor(Whisper_Input, sampling_rate=sr, return_tensors="pt")
-        Whisper_Input_Features = Whisper_Inputs.input_features
-        Whisper_Input_Features = Whisper_Input_Features.to(float_type).to(default_device)
-        attention_mask = Whisper_Inputs.attention_mask.to(default_device) if "attention_mask" in Whisper_Inputs else (Whisper_Input_Features != 0).float()
-
-        Whisper_Predicted_ids = ASR_Whisper.generate(Whisper_Input_Features, 
-                                                     forced_decoder_ids=forced_decoder_ids, 
-                                                     attention_mask=attention_mask)
+        Whisper_Inputs = Whisper_Processor(Whisper_Input, sampling_rate=sr, return_tensors="pt").to(default_device)
+        with torch.no_grad():
+            Whisper_Predicted_ids = ASR_Whisper.generate(
+                **Whisper_Inputs, 
+                forced_decoder_ids=forced_decoder_ids
+            )
         Transcription = Whisper_Processor.batch_decode(Whisper_Predicted_ids, skip_special_tokens=True)
 
         # GNet_Output = Gender_Classification_MLP.generate(GNet_Input)
@@ -158,13 +156,14 @@ if __name__ == "__main__":
     
     # Load Models
     Gender_Classification_MLP = GNet.ModelLoader(GNet.ModelType.best_epoch, device=default_device)
-    ASR_Whisper = AutoModelForSpeechSeq2Seq.from_pretrained(pretrained_model_name_or_path="openai/whisper-large-v3", torch_dtype=torch.float32).to(default_device)
+    ASR_Whisper = AutoModelForSpeechSeq2Seq.from_pretrained(pretrained_model_name_or_path="./whisper", torch_dtype=torch.float32).to(default_device)
 
     print('Models Loaded')
 
     # Load Processors
     GNet_Processor = GNet.WaveFormProcess()
-    Whisper_Processor = AutoProcessor.from_pretrained("openai/whisper-large-v3")
+    Whisper_Processor = AutoProcessor.from_pretrained("./whisper")
+    Whisper_Processor.feature_extractor.return_attention_mask = True
 
     print('Processors Loaded')
 
