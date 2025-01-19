@@ -1,5 +1,5 @@
-torch==2.5.0
-torchaudio==2.5.0
+torch==2.5.1
+torchaudio==2.5.1
 torchinfo==1.8.0
 tqdm==4.66.5
 transformers
@@ -9,4 +9,4 @@ opensmile==2.5.0
 pydub==0.25.1
 librosa==0.10.2.post1
 scipy==1.14.1
-scikit-learn=1.5.2
+scikit-learn==1.5.2

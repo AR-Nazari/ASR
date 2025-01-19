@@ -1,0 +1,14 @@
+services:
+  yolo-app:
+    container_name: asr-app 
+    image: alirezafazli29/asr-app:1.1.1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    ports:
+      - "8005:8080"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
