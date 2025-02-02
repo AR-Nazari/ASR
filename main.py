@@ -13,6 +13,7 @@ from pydantic import BaseModel
 import shutil
 import os
 import uvicorn
+import base64
 
 
 
@@ -150,6 +151,10 @@ def pipeline(file_path,
 #--------------------------------------------------------------------------------------------------------------------#
 
 
+class AudioBase64Request(BaseModel):
+    base64_audio: str
+
+
 if __name__ == "__main__":
 
     default_device = select_device()
@@ -204,7 +209,32 @@ if __name__ == "__main__":
         # Format the response (transcriptions and gender classifications)
         response = [{"transcription": item[0], "gender": item[1]} for item in results]
 
-        return {"results": response}
+        return response
+    
+
+
+    @app.post("/process_base64_audio/")
+    async def process_base64_audio(audio_request: AudioBase64Request):
+
+        saved_file_path = os.path.join(AUDIO_UPLOAD_DIRECTORY, "audio.mp3")
+
+        # Extract base64 string from request
+        base64_str = audio_request.base64_audio
+
+        # Decode the base64 string
+        audio_data = base64.b64decode(base64_str)
+
+        # Save the decoded audio data to a file
+        with open(saved_file_path, "wb") as f:
+            f.write(audio_data)
+        
+        # Use the pipeline to process the saved audio file
+        results = pipeline(saved_file_path, float_type=torch.float32)
+
+        # Format the response (transcriptions and gender classifications)
+        response = [{"transcription": item[0], "gender": item[1]} for item in results]
+
+        return response
     
     @app.post("/upload_audio/", response_class=HTMLResponse)
     async def upload_audio(request: Request, file: UploadFile = File(...)):
