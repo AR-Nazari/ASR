@@ -209,6 +209,9 @@ if __name__ == "__main__":
         # Format the response (transcriptions and gender classifications)
         response = [{"transcription": item[0], "gender": item[1]} for item in results]
 
+        if os.path.exists(saved_file_path):
+            os.remove(saved_file_path)
+
         return response
     
 
@@ -234,6 +237,9 @@ if __name__ == "__main__":
         # Format the response (transcriptions and gender classifications)
         response = [{"transcription": item[0], "gender": item[1]} for item in results]
 
+        if os.path.exists(saved_file_path):
+            os.remove(saved_file_path)
+
         return response
     
     @app.post("/upload_audio/", response_class=HTMLResponse)
@@ -246,6 +252,9 @@ if __name__ == "__main__":
 
         # Process the file with existing pipeline function (assuming it’s defined already)
         results = pipeline(saved_file_path, float_type=torch.float32)
+
+        if os.path.exists(saved_file_path):
+            os.remove(saved_file_path)
 
         # Render results using HTML template
         return templates.TemplateResponse("results.html", {"request": request, "results": results})    
