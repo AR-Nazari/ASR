@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+COPY pip.conf /etc/pip.conf
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -26,7 +28,8 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies from requirements.txt inside the new virtual environment
-RUN pip install --no-deps --no-cache-dir --default-timeout=50000 -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=50000 -r requirements.txt
+RUN rm -fr requirements.txt /etc/pip.conf
 
 # Expose the port Uvicorn will run on
 EXPOSE 8080

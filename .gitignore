@@ -10,3 +10,4 @@ pretrained_models/
 *.m4a
 *.wav
 whisper/*
+*.conf
