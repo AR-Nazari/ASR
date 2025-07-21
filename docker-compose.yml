@@ -1,6 +1,9 @@
 services:
-  yolo-app:
+  asr-app:
     container_name: asr-app 
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: alirezafazli29/asr:dev
     deploy:
       resources:
